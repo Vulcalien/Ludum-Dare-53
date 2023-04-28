@@ -13,38 +13,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#ifndef LD53_SCENE
+#define LD53_SCENE
+
 #include "ld53.h"
 
-#include "screen.h"
-#include "interrupt.h"
-#include "input.h"
-#include "performance.h"
-#include "scene.h"
+struct Scene {
+    void (*init)(u32 flags);
+    void (*tick)(void);
+    void (*draw)(void);
+};
 
-static inline void tick(void) {
-    input_tick();
-    scene->tick();
+extern const struct Scene *scene;
 
-    performance_tick();
+extern const struct Scene scene_start;
+
+inline void scene_set(const struct Scene *new_scene, u32 flags) {
+    scene = new_scene;
+
+    if(flags && scene->init)
+        scene->init(flags);
 }
 
-static inline void draw(void) {
-    scene->draw();
-
-    performance_draw();
-}
-
-int AgbMain(void) {
-    screen_init();
-    scene_set(&scene_start, 0);
-
-    interrupt_enable();
-
-    while(true) {
-        tick();
-
-        vsync();
-        draw();
-    }
-    return 0;
-}
+#endif // LD53_SCENE

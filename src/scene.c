@@ -13,38 +13,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "ld53.h"
-
-#include "screen.h"
-#include "interrupt.h"
-#include "input.h"
-#include "performance.h"
 #include "scene.h"
 
-static inline void tick(void) {
-    input_tick();
-    scene->tick();
-
-    performance_tick();
-}
-
-static inline void draw(void) {
-    scene->draw();
-
-    performance_draw();
-}
-
-int AgbMain(void) {
-    screen_init();
-    scene_set(&scene_start, 0);
-
-    interrupt_enable();
-
-    while(true) {
-        tick();
-
-        vsync();
-        draw();
-    }
-    return 0;
-}
+const struct Scene *scene = NULL;
