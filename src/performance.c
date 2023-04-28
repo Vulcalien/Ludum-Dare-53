@@ -13,34 +13,44 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "ld53.h"
-
-#include "screen.h"
-#include "interrupt.h"
 #include "performance.h"
 
-static inline void tick(void) {
-    // TODO ...
+#include "screen.h"
 
-    performance_tick();
+static bool show_performance = false;
+static u16 tick_vcount;
+static u16 draw_vcount;
+
+static u16 ticks = 0, frames = 0;
+static u16 tps   = 0, fps    = 0;
+
+void performance_tick(void) {
+    tick_vcount = VCOUNT;
+    ticks++;
 }
 
-static inline void draw(void) {
-    // TODO ...
+void performance_draw(void) {
+    draw_vcount = VCOUNT;
+    frames++;
 
-    performance_draw();
+    if(!show_performance)
+        return;
+
+    // TODO draw performance overlay
 }
 
-int AgbMain(void) {
-    screen_init();
+IWRAM_SECTION
+void performance_vblank(void) {
+    static u32 vblanks = 0;
+    vblanks++;
 
-    interrupt_enable();
+    if(vblanks == 60) {
+        vblanks = 0;
 
-    while(true) {
-        tick();
+        tps = ticks;
+        fps = frames;
 
-        vsync();
-        draw();
+        ticks = 0;
+        frames = 0;
     }
-    return 0;
 }

@@ -13,34 +13,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#ifndef LD53_INTERRUPT
+#define LD53_INTERRUPT
+
 #include "ld53.h"
 
-#include "screen.h"
-#include "interrupt.h"
-#include "performance.h"
+extern void interrupt_enable(void);
 
-static inline void tick(void) {
-    // TODO ...
-
-    performance_tick();
-}
-
-static inline void draw(void) {
-    // TODO ...
-
-    performance_draw();
-}
-
-int AgbMain(void) {
-    screen_init();
-
-    interrupt_enable();
-
-    while(true) {
-        tick();
-
-        vsync();
-        draw();
-    }
-    return 0;
-}
+#endif // LD53_INTERRUPT

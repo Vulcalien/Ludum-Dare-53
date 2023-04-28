@@ -13,34 +13,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "ld53.h"
-
-#include "screen.h"
 #include "interrupt.h"
+
 #include "performance.h"
 
-static inline void tick(void) {
-    // TODO ...
+#define IME *((vu32 *) 0x04000208)
+#define IE  *((vu16 *) 0x04000200)
+#define IF  *((vu16 *) 0x04000202)
 
-    performance_tick();
-}
+#define IF_BIOS *((vu16 *) 0x03007ff8)
 
-static inline void draw(void) {
-    // TODO ...
+#define INTERRUPT_HANDLER *((vu32 *) 0x03007ffc)
 
-    performance_draw();
-}
+#define VBLANK (1 << 0)
 
-int AgbMain(void) {
-    screen_init();
+IWRAM_SECTION
+static void interrupt_handler(void) {
+    if(IF & VBLANK) {
+        IF_BIOS |= VBLANK;
+        IF = VBLANK;
 
-    interrupt_enable();
-
-    while(true) {
-        tick();
-
-        vsync();
-        draw();
+        performance_vblank();
     }
-    return 0;
+}
+
+void interrupt_enable(void) {
+    INTERRUPT_HANDLER = (u32) &interrupt_handler;
+
+    IE = VBLANK;
+
+    IME = 1;
 }
