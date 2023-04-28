@@ -17,9 +17,12 @@
 
 #include "screen.h"
 #include "interrupt.h"
+#include "input.h"
 #include "performance.h"
 
 static inline void tick(void) {
+    input_tick();
+
     // TODO ...
 
     performance_tick();

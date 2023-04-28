@@ -13,32 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef LD53_SCREEN
-#define LD53_SCREEN
+#include "input.h"
 
-#include "ld53.h"
+#define KEY_INPUT *((vu16 *) 0x04000130)
 
-#define SCREEN_W (240)
-#define SCREEN_H (160)
+u16 input_keys_is_down  = 0;
+u16 input_keys_was_down = 0;
 
-#define VCOUNT *((vu16 *) 0x04000006)
-
-#define BG0_XOFFSET *((vu16 *) 0x04000010)
-#define BG0_YOFFSET *((vu16 *) 0x04000012)
-
-#define BG1_XOFFSET *((vu16 *) 0x04000014)
-#define BG1_YOFFSET *((vu16 *) 0x04000016)
-
-#define BG2_XOFFSET *((vu16 *) 0x04000018)
-#define BG2_YOFFSET *((vu16 *) 0x0400001a)
-
-#define BG3_XOFFSET *((vu16 *) 0x0400001c)
-#define BG3_YOFFSET *((vu16 *) 0x0400001e)
-
-#define OAM ((vu16 *) 0x07000000)
-
-extern void screen_init(void);
-
-extern void vsync(void);
-
-#endif // LD53_SCREEN
+void input_tick(void) {
+    input_keys_was_down = input_keys_is_down;
+    input_keys_is_down  = KEY_INPUT ^ 0x3ff;
+}
