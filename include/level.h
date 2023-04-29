@@ -37,4 +37,8 @@ extern void level_init(void);
 extern void level_tick(void);
 extern void level_draw(void);
 
+extern struct entity_Data *level_new_entity(i8 type);
+
+extern void level_add_player(void);
+
 #endif // LD53_LEVEL

@@ -33,7 +33,10 @@ struct Entity {
 };
 
 #define ENTITY_TYPES (16) // TODO set the exact number
-extern const struct Entity entity_list[ENTITY_TYPES];
+extern const struct Entity *entity_list[ENTITY_TYPES];
+
+extern const struct Entity entity_player;
+extern const struct Entity entity_enemy;
 
 #define ENTITY_PLAYER    (0)
 #define ENTITY_ENEMY     (1)

@@ -36,7 +36,7 @@ void level_tick(void) {
         if(data->type < 0)
             continue;
 
-        const struct Entity *e = &entity_list[data->type];
+        const struct Entity *e = entity_list[data->type];
         e->tick(data);
     }
 }
@@ -50,7 +50,21 @@ void level_draw(void) {
         if(data->type < 0)
             continue;
 
-        const struct Entity *e = &entity_list[data->type];
+        const struct Entity *e = entity_list[data->type];
         sprites_drawn += e->draw(data, sprites_drawn);
     }
+}
+
+IWRAM_SECTION
+struct entity_Data *level_new_entity(i8 type) {
+    for(u32 i = 0; i < LEVEL_ENTITY_COUNT; i++) {
+        struct entity_Data *data = &level.entities[i];
+        if(data->type < 0) {
+            data->type = type;
+            for(u32 b = 0; b < sizeof(data->data); b++)
+                data->data[b] = 0;
+            return data;
+        }
+    }
+    return NULL;
 }

@@ -31,6 +31,7 @@ extern const struct Scene scene_game;
 extern const struct Scene scene_howtoplay;
 extern const struct Scene scene_settings;
 extern const struct Scene scene_about;
+extern const struct Scene scene_pause;
 
 inline void scene_set(const struct Scene *new_scene, u32 flags) {
     scene = new_scene;
