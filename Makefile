@@ -16,7 +16,7 @@ SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
 
-SRC_SUBDIRS := scene atlas
+SRC_SUBDIRS := scene entity atlas
 
 ifeq ($(CURRENT_OS),UNIX)
 	CC      := arm-none-eabi-gcc

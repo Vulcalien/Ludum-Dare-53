@@ -29,15 +29,27 @@ struct entity_Data {
 
 struct Entity {
     void (*tick)(struct entity_Data *data);
-    void (*draw)(struct entity_Data *data, u32 sprite);
+    u32 (*draw)(struct entity_Data *data, u32 entities_drawn);
 };
 
 #define ENTITY_TYPES (16) // TODO set the exact number
+extern const struct Entity entity_list[ENTITY_TYPES];
 
 #define ENTITY_PLAYER    (0)
 #define ENTITY_ENEMY     (1)
 #define ENTITY_MESSAGE   (2)
 #define ENTITY_LASER     (3)
 #define ENTITY_EXPLOSION (4)
+
+#define SPRITE(attr, xs, ys, shape, size, flip, tile)\
+    do {\
+        (attr)[0] = ((ys - level.offset.y) & 0xff)    << 0 |\
+                    ((shape) & 0x3)                   << 14;\
+        (attr)[1] = ((xs - level.offset.x) & 0x1ff)  << 0  |\
+                    ((flip) & 0x3)                   << 12 |\
+                    ((size) & 0x3)                   << 14;\
+        (attr)[2] = ((tile) & 0x3ff) << 0 |\
+                    0                << 10;\
+    } while(0)
 
 #endif // LD53_ENTITY

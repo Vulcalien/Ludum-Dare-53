@@ -15,6 +15,9 @@
  */
 #include "level.h"
 
+#include "entity.h"
+
+EWRAM_BSS_SECTION
 struct Level level;
 
 void level_init(void) {
@@ -23,4 +26,31 @@ void level_init(void) {
 
     level.offset.x = 0;
     level.offset.y = 0;
+}
+
+IWRAM_SECTION
+void level_tick(void) {
+    for(u32 i = 0; i < LEVEL_ENTITY_COUNT; i++) {
+        struct entity_Data *data = &level.entities[i];
+
+        if(data->type < 0)
+            continue;
+
+        const struct Entity *e = &entity_list[data->type];
+        e->tick(data);
+    }
+}
+
+IWRAM_SECTION
+void level_draw(void) {
+    u32 sprites_drawn = 0;
+    for(u32 i = 0; i < LEVEL_ENTITY_COUNT; i++) {
+        struct entity_Data *data = &level.entities[i];
+
+        if(data->type < 0)
+            continue;
+
+        const struct Entity *e = &entity_list[data->type];
+        sprites_drawn += e->draw(data, sprites_drawn);
+    }
 }

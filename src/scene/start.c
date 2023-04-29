@@ -17,7 +17,6 @@
 
 #include "input.h"
 #include "level.h"
-#include "scene.h"
 
 #define MENU_ITEMS (4)
 
@@ -38,11 +37,11 @@ static void start_tick(void) {
     else if(menu_selected >= MENU_ITEMS)
         menu_selected = 0;
 
-    if(INPUT_PRESSED(KEY_A | KEY_B)) {
+    if(INPUT_PRESSED(KEY_A | KEY_B | KEY_START)) {
         switch(menu_selected) {
             case 0: // Start
                 level_init();
-                /*scene_set(&scene_game, 1);*/
+                scene_set(&scene_game, 1);
                 break;
 
             case 1: // How to play

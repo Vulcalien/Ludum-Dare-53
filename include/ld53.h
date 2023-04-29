@@ -39,4 +39,6 @@
 // implementation-dependent, but Arithmetic Right Shift is required
 static_assert((-1) >> 1 == -1, "Arithmetic Right Shift is required");
 
+extern u32 tick_count;
+
 #endif // LD53_CORE

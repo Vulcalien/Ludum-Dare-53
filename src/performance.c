@@ -15,6 +15,7 @@
  */
 #include "performance.h"
 
+#include "input.h"
 #include "screen.h"
 
 static bool show_performance = false;
@@ -24,11 +25,16 @@ static u16 draw_vcount;
 static u16 ticks = 0, frames = 0;
 static u16 tps   = 0, fps    = 0;
 
+IWRAM_SECTION
 void performance_tick(void) {
     tick_vcount = VCOUNT;
     ticks++;
+
+    if(INPUT_DOWN(KEY_L) && INPUT_DOWN(KEY_R) && INPUT_PRESSED(KEY_SELECT))
+        show_performance = !show_performance;
 }
 
+IWRAM_SECTION
 void performance_draw(void) {
     draw_vcount = VCOUNT;
     frames++;
@@ -36,7 +42,12 @@ void performance_draw(void) {
     if(!show_performance)
         return;
 
-    // TODO draw performance overlay
+    char text[8] = { 0 };
+
+    itoa(tick_vcount, 16, text, 2, true);
+    screen_write(text, 0, 0);
+    itoa(draw_vcount, 16, text, 2, true);
+    screen_write(text, 0, 1);
 }
 
 IWRAM_SECTION

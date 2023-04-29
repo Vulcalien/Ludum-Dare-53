@@ -38,6 +38,7 @@ inline void itoa(u32 number, u8 radix, char *array, u8 digits, bool zero_fill) {
                 array[pos++] = 'A' + (digit - 10);
         }
     }
+    array[pos] = '\0';
 }
 
 #endif // LD53_UTIL

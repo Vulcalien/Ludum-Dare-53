@@ -13,28 +13,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef LD53_LEVEL
-#define LD53_LEVEL
-
-#include "ld53.h"
-
+#include "player.h"
 #include "entity.h"
+#include "screen.h"
+#include "level.h"
+#include "input.h"
 
-#define LEVEL_ENTITY_COUNT (128)
+static void player_tick(struct entity_Data *data) {
+    i32 xm = 0, ym = 0;
+    if(INPUT_DOWN(KEY_LEFT)) xm--;
+    if(INPUT_DOWN(KEY_RIGHT)) xm++;
+    if(INPUT_DOWN(KEY_UP)) ym--;
+    if(INPUT_DOWN(KEY_DOWN)) ym++;
+}
 
-struct Level {
-    struct entity_Data entities[LEVEL_ENTITY_COUNT];
+u32 player_draw(struct entity_Data *data, u32 entities_drawn) {
+    SPRITE(
+        &OAM[entities_drawn * 4], data->x, data->y,
+        1, 2, 0, 0
+    );
 
-    struct {
-        i32 x;
-        i32 y;
-    } offset;
-};
+    SPRITE(
+        &OAM[(entities_drawn + 1) * 4], data->x, data->y,
+        2, 0, 0, 64 + (tick_count / 8) % 4
+    );
 
-extern struct Level level;
-
-extern void level_init(void);
-extern void level_tick(void);
-extern void level_draw(void);
-
-#endif // LD53_LEVEL
+    return 2;
+}

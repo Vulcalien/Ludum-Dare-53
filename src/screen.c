@@ -87,11 +87,52 @@ void screen_init(void) {
     copy_tilesets();
 
     DISPLAY_CONTROL = 0       | // Video Mode
-                      0 << 8  | // Enable BG 0
+                      1 << 8  | // Enable BG 0
                       0 << 9  | // Enable BG 1
                       0 << 10 | // Enable BG 2
-                      0 << 11 | // Enable BG 3
+                      1 << 11 | // Enable BG 3
                       1 << 12;  // Enable OBJ
+
+    // BG0: menus
+    BG0_CONTROL = 0 << 0 | // Priority
+                  0 << 2 | // Tileset Character Block
+                  8 << 8 | // Tilemap Block
+                  0 << 14; // Size (0 is 256x256, 2K)
+
+    // BG3: sky background
+    BG3_CONTROL = 3 << 0  | // Priority
+                  0 << 2  | // Tileset Character Block
+                  9 << 8 | // Tilemap Block
+                  2 << 14; // Size (2 is 256x512, 4K)
+
+    // draw sky background
+    for(u32 i = 0; i < 32 * 64; i++) {
+        u16 r = rand();
+        if(r % 8 == 0)
+            BG3_TILEMAP[i] = 64 + ((r >> 8) % 8);
+        else
+            BG3_TILEMAP[i] = 64;
+    }
+}
+
+void screen_show_menu_bg(bool flag) {
+    if(flag)
+        DISPLAY_CONTROL |= (1 << 8);
+    else
+        DISPLAY_CONTROL &= ~(1 << 8);
+}
+
+IWRAM_SECTION
+void screen_write(char *text, u32 x, u32 y) {
+    for(u32 x = 0; *text != '\0'; x++, text++) {
+        char c = *text;
+        if(c == '\n') {
+            x = 0;
+            y++;
+        } else {
+            BG0_TILEMAP[x + y * 32] = (c - ' ');
+        }
+    }
 }
 
 IWRAM_SECTION

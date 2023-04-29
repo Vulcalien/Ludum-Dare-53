@@ -13,28 +13,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef LD53_LEVEL
-#define LD53_LEVEL
+#ifndef LD53_PLAYER
+#define LD53_PLAYER
 
 #include "ld53.h"
 
-#include "entity.h"
-
-#define LEVEL_ENTITY_COUNT (128)
-
-struct Level {
-    struct entity_Data entities[LEVEL_ENTITY_COUNT];
-
-    struct {
-        i32 x;
-        i32 y;
-    } offset;
-};
-
-extern struct Level level;
-
-extern void level_init(void);
-extern void level_tick(void);
-extern void level_draw(void);
-
-#endif // LD53_LEVEL
+#endif // LD53_PLAYER

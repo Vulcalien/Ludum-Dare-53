@@ -37,7 +37,12 @@
 
 #define OAM ((vu16 *) 0x07000000)
 
+#define BG0_TILEMAP ((vu16 *) 0x06004000)
+#define BG3_TILEMAP ((vu16 *) 0x06004800)
+
 extern void screen_init(void);
+
+extern void screen_write(char *text, u32 x, u32 y);
 
 extern void vsync(void);
 
