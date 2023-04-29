@@ -42,7 +42,8 @@
 
 extern void screen_init(void);
 
-extern void screen_write(char *text, u32 x, u32 y);
+extern void screen_write(char *text, u32 x0, u32 y0);
+extern void screen_draw_frame(u32 x0, u32 y0, u32 x1, u32 y1);
 
 extern void vsync(void);
 

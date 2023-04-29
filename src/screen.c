@@ -123,15 +123,36 @@ void screen_show_menu_bg(bool flag) {
 }
 
 IWRAM_SECTION
-void screen_write(char *text, u32 x, u32 y) {
-    for(u32 x = 0; *text != '\0'; x++, text++) {
+void screen_write(char *text, u32 x0, u32 y0) {
+    i32 y = y0;
+    for(i32 x = x0; *text != '\0'; x++, text++) {
         char c = *text;
         if(c == '\n') {
-            x = 0;
+            x = x0 - 1;
             y++;
         } else {
             BG0_TILEMAP[x + y * 32] = (c - ' ');
         }
+    }
+}
+
+void screen_draw_frame(u32 x0, u32 y0, u32 x1, u32 y1) {
+    BG0_TILEMAP[x0 + y0 * 32] = 74;
+    BG0_TILEMAP[x1 + y0 * 32] = 74 | 1 << 10;
+    BG0_TILEMAP[x0 + y1 * 32] = 74 | 2 << 10;
+    BG0_TILEMAP[x1 + y1 * 32] = 74 | 3 << 10;
+
+    for(u32 x = x0 + 1; x < x1; x++) {
+        BG0_TILEMAP[x + y0 * 32] = 73;
+        BG0_TILEMAP[x + y1 * 32] = 73 | 2 << 10;
+
+        for(u32 y = y0 + 1; y < y1; y++)
+            BG0_TILEMAP[x + y * 32] = 0;
+    }
+
+    for(u32 y = y0 + 1; y < y1; y++) {
+        BG0_TILEMAP[x0 + y * 32] = 72;
+        BG0_TILEMAP[x1 + y * 32] = 72 | 1 << 10;
     }
 }
 
