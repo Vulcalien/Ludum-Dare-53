@@ -31,23 +31,39 @@ static_assert(sizeof(struct player_Data) == 8, "player_Data: wrong size");
 static void player_tick(struct entity_Data *data) {
     struct player_Data *player_data = (struct player_Data *) &data->data;
 
-    i32 xm = 0, ym = 0;
-    if(INPUT_DOWN(KEY_LEFT)) xm--;
-    if(INPUT_DOWN(KEY_RIGHT)) xm++;
-    if(INPUT_DOWN(KEY_UP)) ym--;
-    if(INPUT_DOWN(KEY_DOWN)) ym++;
+    i32 xm = 2, ym = 0;
+    if(INPUT_DOWN(KEY_UP)) ym -= 2;
+    if(INPUT_DOWN(KEY_DOWN)) ym += 2;
+    if(INPUT_DOWN(KEY_LEFT)) xm -= 1;
+    if(INPUT_DOWN(KEY_RIGHT)) xm += 1;
+
+    data->x += xm;
+    data->y += ym;
+
+    level.offset.x = data->x - 32;
+    level.offset.y = data->y - 80;
+
+    static u32 reload_time = 0;
+    if(reload_time == 0) {
+        if(INPUT_DOWN(KEY_A)) {
+            level_add_laser(data->type, data->x, data->y);
+            reload_time = 15;
+        }
+    } else {
+        reload_time--;
+    }
 }
 
 static u32 player_draw(struct entity_Data *data, u32 entities_drawn) {
     struct player_Data *player_data = (struct player_Data *) &data->data;
 
     SPRITE(
-        &OAM[entities_drawn * 4], data->x, data->y,
+        &OAM[entities_drawn * 4], data->x - 16, data->y - 8,
         1, 2, 0, 0
     );
 
     SPRITE(
-        &OAM[(entities_drawn + 1) * 4], data->x, data->y,
+        &OAM[(entities_drawn + 1) * 4], data->x - 16, data->y - 8,
         2, 0, 0, 64 + (tick_count / 8) % 4
     );
 

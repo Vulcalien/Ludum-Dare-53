@@ -21,8 +21,8 @@
 struct entity_Data {
     i8 type;
 
-    i16 x;
-    i16 y;
+    i32 x;
+    i32 y;
 
     u8 data[8];
 };
@@ -30,6 +30,9 @@ struct entity_Data {
 struct Entity {
     void (*tick)(struct entity_Data *data);
     u32 (*draw)(struct entity_Data *data, u32 entities_drawn);
+
+    void (*hurt)(struct entity_Data *data, struct entity_Data *attacker,
+                 u32 damage);
 };
 
 #define ENTITY_TYPES (16) // TODO set the exact number
@@ -37,11 +40,12 @@ extern const struct Entity *entity_list[ENTITY_TYPES];
 
 extern const struct Entity entity_player;
 extern const struct Entity entity_enemy;
+extern const struct Entity entity_laser;
 
 #define ENTITY_PLAYER    (0)
 #define ENTITY_ENEMY     (1)
-#define ENTITY_MESSAGE   (2)
-#define ENTITY_LASER     (3)
+#define ENTITY_LASER     (2)
+#define ENTITY_MESSAGE   (3)
 #define ENTITY_EXPLOSION (4)
 
 #define SPRITE(attr, xs, ys, shape, size, flip, tile)\

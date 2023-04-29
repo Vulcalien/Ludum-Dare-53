@@ -17,5 +17,6 @@
 
 const struct Entity *entity_list[ENTITY_TYPES] = {
     &entity_player,
-    &entity_enemy
+    &entity_enemy,
+    &entity_laser
 };

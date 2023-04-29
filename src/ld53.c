@@ -44,6 +44,9 @@ int AgbMain(void) {
 
     interrupt_enable();
 
+    // DEBUG
+    screen_clear_menu_bg();
+
     while(true) {
         tick();
 

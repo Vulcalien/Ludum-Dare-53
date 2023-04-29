@@ -37,11 +37,10 @@ static void start_tick(void) {
     else if(menu_selected >= MENU_ITEMS)
         menu_selected = 0;
 
-    if(INPUT_PRESSED(KEY_A | KEY_B | KEY_START)) {
+    if(INPUT_RELEASED(KEY_A | KEY_B | KEY_START)) {
         switch(menu_selected) {
             case 0: // Start
-                level_init();
-                scene_set(&scene_game, 1);
+                scene_set(&scene_game, 2);
                 break;
 
             case 1: // How to play

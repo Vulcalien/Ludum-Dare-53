@@ -115,13 +115,6 @@ void screen_init(void) {
     }
 }
 
-void screen_show_menu_bg(bool flag) {
-    if(flag)
-        DISPLAY_CONTROL |= (1 << 8);
-    else
-        DISPLAY_CONTROL &= ~(1 << 8);
-}
-
 IWRAM_SECTION
 void screen_write(char *text, u32 x0, u32 y0) {
     i32 y = y0;
@@ -134,6 +127,11 @@ void screen_write(char *text, u32 x0, u32 y0) {
             BG0_TILEMAP[x + y * 32] = (c - ' ');
         }
     }
+}
+
+void screen_clear_menu_bg(void) {
+    for(u32 i = 0; i < 32 * 20; i++)
+        BG0_TILEMAP[i] = 63;
 }
 
 void screen_draw_frame(u32 x0, u32 y0, u32 x1, u32 y1) {

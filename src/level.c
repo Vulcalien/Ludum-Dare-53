@@ -16,6 +16,7 @@
 #include "level.h"
 
 #include "entity.h"
+#include "screen.h"
 
 EWRAM_BSS_SECTION
 struct Level level;
@@ -26,6 +27,14 @@ void level_init(void) {
 
     level.offset.x = 0;
     level.offset.y = 0;
+
+    level_add_player();
+
+    // DEBUG
+    level_add_enemy();
+    level_add_enemy();
+    level_add_enemy();
+    level_add_enemy();
 }
 
 IWRAM_SECTION
@@ -53,6 +62,13 @@ void level_draw(void) {
         const struct Entity *e = entity_list[data->type];
         sprites_drawn += e->draw(data, sprites_drawn);
     }
+
+    // hide remaining sprites
+    for(u32 i = sprites_drawn; i < 128; i++)
+        OAM[i * 4] = 1 << 9;
+
+    BG3_XOFFSET = level.offset.x;
+    BG3_YOFFSET = level.offset.y;
 }
 
 IWRAM_SECTION

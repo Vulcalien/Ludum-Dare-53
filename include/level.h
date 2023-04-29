@@ -40,5 +40,7 @@ extern void level_draw(void);
 extern struct entity_Data *level_new_entity(i8 type);
 
 extern void level_add_player(void);
+extern void level_add_enemy(void);
+extern void level_add_laser(i8 owner_type, i32 x, i32 y);
 
 #endif // LD53_LEVEL

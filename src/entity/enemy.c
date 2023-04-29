@@ -26,21 +26,18 @@ static_assert(sizeof(struct enemy_Data) == 8, "enemy_Data: wrong size");
 
 static void enemy_tick(struct entity_Data *data) {
     struct enemy_Data *enemy_data = (struct enemy_Data *) &data->data;
-
-
 }
 
-/*static*/
-u32 enemy_draw(struct entity_Data *data, u32 entities_drawn) {
+static u32 enemy_draw(struct entity_Data *data, u32 entities_drawn) {
     struct enemy_Data *enemy_data = (struct enemy_Data *) &data->data;
 
     SPRITE(
-        &OAM[entities_drawn * 4], data->x, data->y,
+        &OAM[entities_drawn * 4], data->x - 16, data->y - 8,
         1, 2, 1, 4
     );
 
     SPRITE(
-        &OAM[(entities_drawn + 1) * 4], data->x + 24, data->y,
+        &OAM[(entities_drawn + 1) * 4], data->x - 16 + 24, data->y - 8,
         2, 0, 1, 64 + (tick_count / 8) % 4
     );
 
@@ -54,7 +51,18 @@ const struct Entity entity_enemy = {
 
 void level_add_enemy(void) {
     struct entity_Data *data = level_new_entity(ENTITY_ENEMY);
+    if(!data)
+        return;
+
     struct enemy_Data *enemy_data = (struct enemy_Data *) &data->data;
 
-    // ...
+    struct entity_Data *player = &level.entities[0];
+
+    data->x = 260;
+    data->y = player->y + rand() % 31 - 15;
+
+    if(data->y < 8)
+        data->y = 8;
+    else if(data->y > 512 - 9)
+        data->y = 512 - 9;
 }
