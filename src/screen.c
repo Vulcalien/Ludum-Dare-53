@@ -15,6 +15,8 @@
  */
 #include "screen.h"
 
+#include "atlas.h"
+
 #define DISPLAY_CONTROL *((vu16 *) 0x04000000)
 #define DISPLAY_STATUS  *((vu16 *) 0x04000004)
 
@@ -36,15 +38,60 @@
 #define BG_PALETTE  ((vu16 *) 0x05000000)
 #define SPR_PALETTE ((vu16 *) 0x05000200)
 
-void screen_init(void) {
-    // TODO ...
+static inline void copy_palettes(void) {
+    u16 palette[16] = {
+        0,
+        0x7fff, 0x0000, 0x001d, 0x02bd, 0x03bd,
+        0x6f7b, 0x3398, 0x295f, 0x294a, 0x7400
+    };
 
+    memcpy16(BG_PALETTE, palette, sizeof(palette) / sizeof(u16));
+    memcpy16(SPR_PALETTE, palette, sizeof(palette) / sizeof(u16));
+}
+
+static inline void copy_tileset(vu16 *dest, u8 *tileset, u32 size) {
+    size /= 2;
+
+    for(u32 i = 0; i < size; i++) {
+        u8 byte0 = tileset[i * 2];
+        byte0 = (byte0 & 0x0f) << 4 | (byte0 & 0xf0) >> 4;
+
+        u8 byte1 = tileset[i * 2 + 1];
+        byte1 = (byte1 & 0x0f) << 4 | (byte1 & 0xf0) >> 4;
+
+        dest[i] = byte0 | byte1 << 8;
+    }
+}
+
+static inline void copy_tilesets(void) {
+    copy_tileset(
+        SPR_TILESET, sprite_atlas,
+        sizeof(sprite_atlas) / sizeof(u8)
+    );
+
+    copy_tileset(
+        CHAR_BLOCK_0, tile_atlas,
+        sizeof(tile_atlas) / sizeof(u8)
+    );
+}
+
+void screen_init(void) {
     // hide all sprites
     for(u32 i = 0; i < 128; i++)
         OAM[i * 4] = 1 << 9;
 
     // enable V-Blank IRQ
     DISPLAY_STATUS = (1 << 3);
+
+    copy_palettes();
+    copy_tilesets();
+
+    DISPLAY_CONTROL = 0       | // Video Mode
+                      0 << 8  | // Enable BG 0
+                      0 << 9  | // Enable BG 1
+                      0 << 10 | // Enable BG 2
+                      0 << 11 | // Enable BG 3
+                      1 << 12;  // Enable OBJ
 }
 
 IWRAM_SECTION

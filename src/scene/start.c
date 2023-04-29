@@ -15,12 +15,49 @@
  */
 #include "scene.h"
 
+#include "input.h"
+#include "level.h"
+#include "scene.h"
+
+#define MENU_ITEMS (4)
+
+static i32 menu_selected = 0;
+
 static void start_init(u32 flags) {
-    // TODO ...
+    menu_selected = 0;
 }
 
 static void start_tick(void) {
-    // TODO ...
+    if(INPUT_PRESSED(KEY_LEFT | KEY_DOWN))
+        menu_selected++;
+    if(INPUT_PRESSED(KEY_RIGHT | KEY_UP))
+        menu_selected--;
+
+    if(menu_selected < 0)
+        menu_selected = MENU_ITEMS - 1;
+    else if(menu_selected >= MENU_ITEMS)
+        menu_selected = 0;
+
+    if(INPUT_PRESSED(KEY_A | KEY_B)) {
+        switch(menu_selected) {
+            case 0: // Start
+                level_init();
+                /*scene_set(&scene_game, 1);*/
+                break;
+
+            case 1: // How to play
+                /*scene_set(&scene_howtoplay, 1);*/
+                break;
+
+            case 2: // Settings
+                /*scene_set(&scene_settings, 1);*/
+                break;
+
+            case 3: // About
+                /*scene_set(&scene_about, 1);*/
+                break;
+        }
+    }
 }
 
 static void start_draw(void) {

@@ -13,30 +13,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef LD53_SCENE
-#define LD53_SCENE
+#ifndef LD53_ATLAS
+#define LD53_ATLAS
 
 #include "ld53.h"
 
-struct Scene {
-    void (*init)(u32 flags);
-    void (*tick)(void);
-    void (*draw)(void);
-};
+extern u8 tile_atlas[32 * 256];
+extern u8 sprite_atlas[32 * 256];
 
-extern const struct Scene *scene;
-
-extern const struct Scene scene_start;
-extern const struct Scene scene_game;
-extern const struct Scene scene_howtoplay;
-extern const struct Scene scene_settings;
-extern const struct Scene scene_about;
-
-inline void scene_set(const struct Scene *new_scene, u32 flags) {
-    scene = new_scene;
-
-    if(flags && scene->init)
-        scene->init(flags);
-}
-
-#endif // LD53_SCENE
+#endif // LD53_ATLAS

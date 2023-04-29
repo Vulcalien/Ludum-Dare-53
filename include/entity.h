@@ -13,30 +13,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef LD53_SCENE
-#define LD53_SCENE
+#ifndef LD53_ENTITY
+#define LD53_ENTITY
 
 #include "ld53.h"
 
-struct Scene {
-    void (*init)(u32 flags);
-    void (*tick)(void);
-    void (*draw)(void);
+struct entity_Data {
+    i8 type;
+
+    i16 x;
+    i16 y;
+
+    u8 data[8];
 };
 
-extern const struct Scene *scene;
+struct Entity {
+    void (*tick)(struct entity_Data *data);
+    void (*draw)(struct entity_Data *data, u32 sprite);
+};
 
-extern const struct Scene scene_start;
-extern const struct Scene scene_game;
-extern const struct Scene scene_howtoplay;
-extern const struct Scene scene_settings;
-extern const struct Scene scene_about;
+#define ENTITY_TYPES (16) // TODO set the exact number
 
-inline void scene_set(const struct Scene *new_scene, u32 flags) {
-    scene = new_scene;
+#define ENTITY_PLAYER    (0)
+#define ENTITY_ENEMY     (1)
+#define ENTITY_MESSAGE   (2)
+#define ENTITY_LASER     (3)
+#define ENTITY_EXPLOSION (4)
 
-    if(flags && scene->init)
-        scene->init(flags);
-}
-
-#endif // LD53_SCENE
+#endif // LD53_ENTITY

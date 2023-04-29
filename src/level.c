@@ -13,30 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef LD53_SCENE
-#define LD53_SCENE
+#include "level.h"
 
-#include "ld53.h"
+struct Level level;
 
-struct Scene {
-    void (*init)(u32 flags);
-    void (*tick)(void);
-    void (*draw)(void);
-};
+void level_init(void) {
+    for(u32 i = 0; i < LEVEL_ENTITY_COUNT; i++)
+        level.entities[i].type = -1;
 
-extern const struct Scene *scene;
-
-extern const struct Scene scene_start;
-extern const struct Scene scene_game;
-extern const struct Scene scene_howtoplay;
-extern const struct Scene scene_settings;
-extern const struct Scene scene_about;
-
-inline void scene_set(const struct Scene *new_scene, u32 flags) {
-    scene = new_scene;
-
-    if(flags && scene->init)
-        scene->init(flags);
+    level.offset.x = 0;
+    level.offset.y = 0;
 }
-
-#endif // LD53_SCENE
