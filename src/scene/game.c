@@ -17,8 +17,10 @@
 
 #include "input.h"
 #include "level.h"
+#include "screen.h"
 
 static void game_init(u32 flags) {
+    screen_clear_menu_bg();
     if(flags == 2)
         level_init();
 }

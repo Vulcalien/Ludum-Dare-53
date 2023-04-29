@@ -13,46 +13,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#ifndef LD53_SOUND
+#define LD53_SOUND
+
 #include "ld53.h"
 
-#include "screen.h"
-#include "interrupt.h"
-#include "input.h"
-#include "performance.h"
-#include "scene.h"
-#include "sound.h"
+extern void sound_init(void);
 
-u32 tick_count = 0;
+enum sound_Channel {
+    sound_channel_A,
+    sound_channel_B
+};
 
-static inline void tick(void) {
-    input_tick();
-    scene->tick();
+#define SOUND_PLAY(sound, channel, loop)\
+    sound_play((sound), sizeof(sound), channel, loop)
+extern void sound_play(const u8 *sound, u32 length,
+                       enum sound_Channel channel, bool loop);
+extern void sound_stop(enum sound_Channel channel);
 
-    performance_tick();
+extern void sound_vblank(void);
 
-    tick_count++;
-}
+extern void sound_set_volume(i32 volume);
 
-static inline void draw(void) {
-    scene->draw();
+extern const u8 sound_music_0[549804];
 
-    performance_draw();
-}
-
-int AgbMain(void) {
-    screen_init();
-    scene_set(&scene_start, 0);
-
-    interrupt_enable();
-    sound_init();
-
-    SOUND_PLAY(sound_music_0, sound_channel_B, true);
-
-    while(true) {
-        tick();
-
-        vsync();
-        draw();
-    }
-    return 0;
-}
+#endif // LD53_SOUND

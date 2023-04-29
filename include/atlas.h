@@ -18,7 +18,7 @@
 
 #include "ld53.h"
 
-extern u8 tile_atlas[32 * 256];
-extern u8 sprite_atlas[32 * 256];
+extern const u8 tile_atlas[32 * 256];
+extern const u8 sprite_atlas[32 * 256];
 
 #endif // LD53_ATLAS

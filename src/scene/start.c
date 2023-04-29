@@ -17,6 +17,7 @@
 
 #include "input.h"
 #include "level.h"
+#include "screen.h"
 
 #define MENU_ITEMS (4)
 
@@ -59,6 +60,9 @@ static void start_tick(void) {
 }
 
 static void start_draw(void) {
+    for(u32 i = 0; i < 32 * 20; i++) {
+        BG0_TILEMAP[i] = 0;
+    }
     // TODO ...
 }
 
